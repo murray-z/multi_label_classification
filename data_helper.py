@@ -22,8 +22,8 @@ class MultiClsDataSet(Dataset):
                 line = json.loads(line)
                 texts.append(line["text"])
                 tmp_label = [0] * self.class_num
-                for idx in line["label"]:
-                    tmp_label[idx] = 1
+                for label in line["label"]:
+                    tmp_label[self.label2idx[label]] = 1
                 labels.append(tmp_label)
 
         tokenizers = self.tokenizer(texts,
