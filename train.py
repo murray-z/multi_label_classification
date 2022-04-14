@@ -24,11 +24,12 @@ lr = 2e-5
 batch_size = 128
 max_len = 128
 hidden_size = 768
-epochs = 3
+epochs = 10
 
 
 train_dataset = MultiClsDataSet(train_path, max_len=max_len, label2idx_path=label2idx_path)
 dev_dataset = MultiClsDataSet(dev_path, max_len=max_len, label2idx_path=label2idx_path)
+
 
 train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 dev_dataloader = DataLoader(dev_dataset, batch_size=batch_size, shuffle=False)
@@ -53,15 +54,16 @@ def train():
     for epoch in range(1, epochs):
         model.train()
         for i, batch in enumerate(train_dataloader):
-            input_ids, token_type_ids, attention_mask, labels = [d.to(device) for d in batch]
             optimizer.zero_grad()
-            logits = model(input_ids, token_type_ids, attention_mask)
+            batch = [d.to(device) for d in batch]
+            labels = batch[-1]
+            logits = model(*batch[:3])
             loss = criterion(logits, labels)
             loss.backward()
             optimizer.step()
 
             if i % 100 == 0:
-                acc_score = get_acc_score(logits, labels)
+                acc_score = get_acc_score(labels, logits)
                 print("Train epoch:{} step:{}  acc: {} loss:{} ".format(epoch, i, acc_score, loss.item()))
 
         # 验证集合

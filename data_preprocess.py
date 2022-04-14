@@ -8,7 +8,7 @@ import json
 
 
 def load_json(data_path):
-    with open(data_path) as f:
+    with open(data_path, encoding="utf-8") as f:
         return json.loads(f.read())
 
 
@@ -26,7 +26,7 @@ def preprocess(train_data_path, label2idx_path, max_len_ratio=0.9):
     """
     labels = []
     text_length = []
-    with open(train_data_path) as f:
+    with open(train_data_path, encoding="utf-8") as f:
         for data in f:
             data = json.loads(data)
             text_length.append(len(data["text"]))

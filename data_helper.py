@@ -17,7 +17,7 @@ class MultiClsDataSet(Dataset):
     def encoder(self, data_path):
         texts = []
         labels = []
-        with open(data_path) as f:
+        with open(data_path, encoding="utf-8") as f:
             for line in f:
                 line = json.loads(line)
                 texts.append(line["text"])
@@ -36,10 +36,20 @@ class MultiClsDataSet(Dataset):
         token_type_ids = tokenizers["token_type_ids"]
         attention_mask = tokenizers["attention_mask"]
 
-        return input_ids, token_type_ids, attention_mask, torch.tensor(labels, dtype=torch.int32)
+        return input_ids, token_type_ids, attention_mask, \
+               torch.tensor(labels, dtype=torch.float)
 
     def __len__(self):
         return len(self.labels)
 
     def __getitem__(self, item):
-        return self.input_ids[item], self.token_type_ids[item], self.attention_mask[item], self.labels[item]
+        return self.input_ids[item],  self.attention_mask[item], \
+               self.token_type_ids[item], self.labels[item]
+
+
+if __name__ == '__main__':
+    dataset = MultiClsDataSet(data_path="./data/train.json")
+    print(dataset.input_ids)
+    print(dataset.token_type_ids)
+    print(dataset.attention_mask)
+    print(dataset.labels)

@@ -14,8 +14,8 @@ class BertMultiLabelCls(nn.Module):
         self.drop = nn.Dropout(dropout)
         self.bert = BertModel.from_pretrained("bert-base-chinese")
 
-    def forward(self, input_ids, token_type_ids, attention_mask):
-        outputs = self.bert(input_ids, token_type_ids, attention_mask)
+    def forward(self, input_ids, attention_mask, token_type_ids):
+        outputs = self.bert(input_ids, attention_mask, token_type_ids)
         cls = self.drop(outputs[1])
         out = F.sigmoid(self.fc(cls))
         return out
