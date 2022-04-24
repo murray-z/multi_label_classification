@@ -22,21 +22,26 @@ model.eval()
 
 
 def predict(texts):
-    outputs = tokenizer(texts, return_tensors="pt", max_len=max_len)
-    logits = model(outputs["input_ids"], outputs["token_type_ids"], outputs["attention_mask"])
+    outputs = tokenizer(texts, return_tensors="pt", max_length=max_len,
+                        padding=True, truncation=True)
+    logits = model(outputs["input_ids"].to(device),
+                   outputs["attention_mask"].to(device),
+                   outputs["token_type_ids"].to(device))
     logits = logits.cpu().tolist()
+    # print(logits)
     result = []
     for sample in logits:
         pred_label = []
         for idx, logit in enumerate(sample):
             if logit > 0.5:
-                pred_label.append(idx2label[logit])
+                pred_label.append(idx2label[idx])
         result.append(pred_label)
     return result
 
 
 if __name__ == '__main__':
-    texts = ["xxxx", "yyyy"]
+    texts = ["中超-德尔加多扳平郭田雨绝杀 泰山2-1逆转亚泰", "今日沪深两市指数整体呈现震荡调整格局"]
     result = predict(texts)
+    print(result)
 
 

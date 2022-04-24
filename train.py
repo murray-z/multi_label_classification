@@ -37,7 +37,7 @@ dev_dataloader = DataLoader(dev_dataset, batch_size=batch_size, shuffle=False)
 
 def get_acc_score(y_true_tensor, y_pred_tensor):
     y_pred_tensor = (y_pred_tensor.cpu() > 0.5).int().numpy()
-    y_true_tensor = y_true_tensor.numpy()
+    y_true_tensor = y_true_tensor.cpu().numpy()
     return accuracy_score(y_true_tensor, y_pred_tensor)
 
 
@@ -102,6 +102,7 @@ def test(model_path, test_data_path):
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
     model = BertMultiLabelCls(hidden_size=hidden_size, class_num=class_num)
     model.load_state_dict(torch.load(model_path))
+    model.to(device)
     model.eval()
     true_labels = []
     pred_labels = []
