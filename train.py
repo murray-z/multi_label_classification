@@ -85,8 +85,8 @@ def dev(model, dataloader, criterion):
     pred_labels = []
     with torch.no_grad():
         for i, batch in enumerate(dataloader):
-            input_ids, token_type_ids, attention_mask, labels = [d.to(device) for d in batch]
-            logits = model(input_ids, token_type_ids, attention_mask)
+            input_ids, attention_mask, token_type_ids, labels = [d.to(device) for d in batch]
+            logits = model(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
             loss = criterion(logits, labels)
             all_loss.append(loss.item())
             true_labels.append(labels)
@@ -108,8 +108,8 @@ def test(model_path, test_data_path):
     pred_labels = []
     with torch.no_grad():
         for i, batch in enumerate(test_dataloader):
-            input_ids, token_type_ids, attention_mask, labels = [d.to(device) for d in batch]
-            logits = model(input_ids, token_type_ids, attention_mask)
+            input_ids, attention_mask, token_type_ids, labels = [d.to(device) for d in batch]
+            logits = model(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
             true_labels.append(labels)
             pred_labels.append(logits)
     true_labels = torch.cat(true_labels, dim=0)
